@@ -1,0 +1,101 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-3">
+    <!-- 질문 -->
+    <h2 class="border-bottom py-2" th:text="${question3.subject}"></h2>
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;" th:text="${question3.content}"></div>
+            <div class="d-flex justify-content-end">
+            <div th:if="${question3.modifyDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+                <div class="mb-2">modified at</div>
+                <div th:text="${#temporals.format(question3.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+            </div>
+                <div class="badge bg-light text-dark p-2 text-start">
+                <div class="mb-2">
+                    <span th:if="${question3.author != null}" th:text="${question3.author.username}"></span>
+                </div>
+                <div th:text="${#temporals.format(question3.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+            <div class="my-3">
+            <a href="javascript:void(0)" class="recommend btn btn-sm btn-outline-secondary"
+                th:data-uri="@{|/question3/vote/${question3.id}|}">
+                추천
+                <span class="badge rounded-pill bg-success" th:text="${#lists.size(question3.voter)}"></span>
+            </a>
+            <a th:href="@{|/question3/modify/${question3.id}|}" class="btn btn-sm btn-outline-secondary"
+                sec:authorize="isAuthenticated()"
+                th:if="${question3.author != null and #authentication.getPrincipal().getUsername() == question3.author.username}"
+                th:text="수정"></a>
+                <a href="javascript:void(0);" th:data-uri="@{|/question3/delete/${question3.id}|}"
+                class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                th:if="${question3.author != null and #authentication.getPrincipal().getUsername() == question3.author.username}"
+                th:text="삭제"></a>
+        </div>
+        </div>
+    </div>
+    <!-- 답변의 갯수 표시 -->
+    <h5 class="border-bottom my-3 py-2" 
+        th:text="|${#lists.size(question3.answer3List)}개의 답변이 있습니다.|"></h5>
+    <!-- 답변 반복 시작 -->
+    <div class="card my-3" th:each="answer3 : ${question3.answer3List}">
+    	<a th:id="|answer3_${answer3.id}|"></a>
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;" th:text="${answer3.content}"></div>
+            <div class="d-flex justify-content-end">
+            <div th:if="${answer3.modifyDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+                <div class="mb-2">modified at</div>
+                <div th:text="${#temporals.format(answer3.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+            </div>
+                <div class="badge bg-light text-dark p-2 text-start">
+                <div class="mb-2">
+                    <span th:if="${answer3.author != null}" th:text="${answer3.author.username}"></span>
+                </div>
+                    <div th:text="${#temporals.format(answer3.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+            <div class="my-3">
+            <a href="javascript:void(0)" class="recommend btn btn-sm btn-outline-secondary"
+                th:data-uri="@{|/answer3/vote/${answer3.id}|}">
+                추천
+                <span class="badge rounded-pill bg-success" th:text="${#lists.size(answer3.voter)}"></span>
+            </a>
+            <a th:href="@{|/answer3/modify/${answer3.id}|}" class="btn btn-sm btn-outline-secondary"
+                sec:authorize="isAuthenticated()"
+                th:if="${answer3.author != null and #authentication.getPrincipal().getUsername() == answer3.author.username}"
+                th:text="수정"></a>
+                <a href="javascript:void(0);" th:data-uri="@{|/answer3/delete/${answer3.id}|}"
+                class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                th:if="${answer3.author != null and #authentication.getPrincipal().getUsername() == answer3.author.username}"
+                th:text="삭제"></a>
+        	</div>
+        </div>
+    </div>
+    <!-- 답변 반복 끝  -->
+    <!-- 답변 작성 -->
+    <form th:action="@{|/answer3/create/${question3.id}|}" th:object="${answer3Form}" method="post" class="my-3">
+    <div th:replace="form_errors :: formErrorsFragment"></div>
+    <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>
+        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="10"></textarea>
+        <input type="submit" value="답변등록" class="btn btn-primary my-2">
+    </form>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+		const delete_elements = document.getElementsByClassName("delete");
+		Array.from(delete_elements).forEach(function(element) {
+		    element.addEventListener('click', function() {
+		        if(confirm("정말로 삭제하시겠습니까?")) {
+		            location.href = this.dataset.uri;
+		        };
+		    });
+		});
+		const recommend_elements = document.getElementsByClassName("recommend");
+		Array.from(recommend_elements).forEach(function(element) {
+		    element.addEventListener('click', function() {
+		        if(confirm("정말로 추천하시겠습니까?")) {
+		            location.href = this.dataset.uri;
+		        };
+		    });
+		});
+</script>
+</html>

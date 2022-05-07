@@ -1,0 +1,44 @@
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://58.229.253.250:3306/student09
+    username: student09
+    password: 1234!!
+
+  jpa:
+    #    open-in-view: false
+    show-sql: true
+    hibernate:
+      format_sql: true
+      ddl-auto: update  # none, update, create, create-drop, validate
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # GET, POST ? ? ??? PUT, DELETE ?? ???? ???? ?? ??
+
+  devtools:
+    livereload:
+      enabled: true
+
+  logging:
+    level:
+      org:
+        hibernate:
+          SQL: DEBUG
+          type:
+            descriptor:
+              sql:
+                BasicBinder: TRACE
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 8968725038-jb2v28sq6a2dgu3au5g5ghi2nkjgdi6f.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
