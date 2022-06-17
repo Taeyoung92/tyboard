@@ -24,10 +24,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="text-center" th:each="question1, loop : ${paging}">
-                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+            <tr class="text-center" th:each="question1, loop : ${paging}"><!--글 번호-->
+                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td><!--글 번호-->
                 <td class="text-start">
-                    <a th:href="@{|/question1/detail/${question1.id}|}" th:text="${question1.subject}"></a>
+                    <a th:href="@{|/question1/detail/${question1.id}|}" th:text="${question1.subject}"></a><!--글 제목-->
                     <span class="text-danger small ms-2"
                         th:if="${#lists.size(question1.answer1List) > 0}"
                         th:text="${#lists.size(question1.answer1List)}">

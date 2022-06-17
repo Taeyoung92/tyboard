@@ -1,7 +1,7 @@
 package com.web.tyboard.answer;
 
 import com.web.tyboard.question.Question3;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,10 +28,10 @@ public class Answer3 {
     private Question3 question3;
 
     @ManyToOne
-    private SiteUser author;
+    private User author;
 
     private LocalDateTime modifyDate;
 
     @ManyToMany
-    Set<SiteUser> voter;
+    Set<User> voter;
 }

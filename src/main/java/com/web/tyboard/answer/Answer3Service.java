@@ -2,7 +2,7 @@ package com.web.tyboard.answer;
 
 import com.web.tyboard.DataNotFoundException;
 import com.web.tyboard.question.Question3;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class Answer3Service {
     private final Answer3Repository answer3Repository;
 
 
-    public Answer3 create(Question3 question3, String content, SiteUser author) {
+    public Answer3 create(Question3 question3, String content, User author) {
         Answer3 answer3 = new Answer3();
         answer3.setContent(content);
         answer3.setCreateDate(LocalDateTime.now());
@@ -44,8 +44,8 @@ public class Answer3Service {
         this.answer3Repository.delete(answer3);
     }
 
-    public void vote(Answer3 answer3, SiteUser siteUser) {
-        answer3.getVoter().add(siteUser);
+    public void vote(Answer3 answer3, User user) {
+        answer3.getVoter().add(user);
         this.answer3Repository.save(answer3);
     }
 }

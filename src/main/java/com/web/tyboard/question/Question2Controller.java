@@ -1,7 +1,7 @@
 package com.web.tyboard.question;
 
 import com.web.tyboard.answer.Answer2Form;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import com.web.tyboard.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.security.Principal;
 
-@RequestMapping(value = {"/question2", "/index"})
+@RequestMapping("/question2")
 @RequiredArgsConstructor
 @Controller
 public class Question2Controller {
@@ -52,8 +52,8 @@ public class Question2Controller {
         if (bindingResult.hasErrors()) {
             return "question2_form";
         }
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.question2Service.create(question2Form.getSubject(), question2Form.getContent(), siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.question2Service.create(question2Form.getSubject(), question2Form.getContent(), user);
         return "redirect:/question2/list";
     }
 
@@ -99,8 +99,8 @@ public class Question2Controller {
     @GetMapping("/vote/{id}")
     public String question2Vote(Principal principal, @PathVariable("id") Integer id) {
         Question2 question2 = this.question2Service.getQuestion2(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.question2Service.vote(question2, siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.question2Service.vote(question2, user);
         return String.format("redirect:/question2/detail/%s", id);
     }
 }

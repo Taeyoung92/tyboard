@@ -2,7 +2,7 @@ package com.web.tyboard.answer;
 
 import com.web.tyboard.DataNotFoundException;
 import com.web.tyboard.question.Question1;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public class Answer1Service {
     private final Answer1Repository answer1Repository;
 
 
-    public Answer1 create(Question1 question1, String content, SiteUser author) {
+    public Answer1 create(Question1 question1, String content, User author) {
         Answer1 answer1 = new Answer1();
         answer1.setContent(content);
         answer1.setCreateDate(LocalDateTime.now());
@@ -45,8 +45,8 @@ public class Answer1Service {
         this.answer1Repository.delete(answer1);
     }
 
-    public void vote(Answer1 answer1, SiteUser siteUser) {
-        answer1.getVoter().add(siteUser);
+    public void vote(Answer1 answer1, User user) {
+        answer1.getVoter().add(user);
         this.answer1Repository.save(answer1);
     }
 }

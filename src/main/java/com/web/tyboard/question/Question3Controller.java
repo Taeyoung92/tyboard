@@ -1,7 +1,7 @@
 package com.web.tyboard.question;
 
 import com.web.tyboard.answer.Answer3Form;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import com.web.tyboard.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,8 +52,8 @@ public class Question3Controller {
         if (bindingResult.hasErrors()) {
             return "question3_form";
         }
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.question3Service.create(question3Form.getSubject(), question3Form.getContent(), siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.question3Service.create(question3Form.getSubject(), question3Form.getContent(), user);
         return "redirect:/question3/list";
     }
 
@@ -99,8 +99,8 @@ public class Question3Controller {
     @GetMapping("/vote/{id}")
     public String question3Vote(Principal principal, @PathVariable("id") Integer id) {
         Question3 question3 = this.question3Service.getQuestion3(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.question3Service.vote(question3, siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.question3Service.vote(question3, user);
         return String.format("redirect:/question3/detail/%s", id);
     }
 }

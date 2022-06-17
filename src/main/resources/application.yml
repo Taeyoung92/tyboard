@@ -13,6 +13,7 @@ spring:
       format_sql: true
       ddl-auto: update  # none, update, create, create-drop, validate
 
+
   mvc:
     hiddenmethod:
       filter:

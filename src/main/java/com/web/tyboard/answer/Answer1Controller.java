@@ -2,7 +2,7 @@ package com.web.tyboard.answer;
 
 import com.web.tyboard.question.Question1;
 import com.web.tyboard.question.Question1Service;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import com.web.tyboard.user.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +35,7 @@ public class Answer1Controller {
     public String createAnswer(Model model, @PathVariable("id") Integer id, @RequestParam String content,
                                @Valid Answer1Form answer1Form, BindingResult bindingResult, Principal principal) {
         Question1 question1 = this.question1Service.getQuestion1(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
+        User siteUser = this.userService.getUser(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("question1", question1);
             return "question1_detail";
@@ -53,9 +53,8 @@ public class Answer1Controller {
         if (!answer1.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.answer1Service.modify(answer1, answer1Form.getContent());
-        return String.format("redirect:/question1/detail/%s#answer1_%s",
-                answer1.getQuestion1().getId(), answer1.getId());
+        answer1Form.setContent(answer1.getContent());
+        return "answer1_form";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -88,8 +87,8 @@ public class Answer1Controller {
     @GetMapping("/vote/{id}")
     public String answer1Vote(Principal principal, @PathVariable("id") Integer id) {
         Answer1 answer1 = this.answer1Service.getAnswer1(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.answer1Service.vote(answer1, siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.answer1Service.vote(answer1, user);
         return String.format("redirect:/question1/detail/%s#answer1_%s",
                 answer1.getQuestion1().getId(), answer1.getId());
     }

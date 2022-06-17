@@ -2,7 +2,7 @@ package com.web.tyboard.question;
 
 import com.web.tyboard.DataNotFoundException;
 import com.web.tyboard.answer.Answer1;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,9 +34,9 @@ public class Question1Service {
             @Override
             public Predicate toPredicate(Root<Question1> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query.distinct(true);  // 중복을 제거
-                Join<Question1, SiteUser> u1 = q.join("author", JoinType.LEFT);
+                Join<Question1, User> u1 = q.join("author", JoinType.LEFT);
                 Join<Question1, Answer1> a = q.join("answer1List", JoinType.LEFT);
-                Join<Answer1, SiteUser> u2 = a.join("author", JoinType.LEFT);
+                Join<Answer1, User> u2 = a.join("author", JoinType.LEFT);
                 return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
                         cb.like(q.get("content"), "%" + kw + "%"),      // 내용
                         cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
@@ -67,7 +67,7 @@ public class Question1Service {
         return this.question1Repository.findAll(spec, pageable);
     }
 
-    public void create(String subject, String content, SiteUser user) {
+    public void create(String subject, String content, User user) {
         Question1 q = new Question1();
         q.setSubject(subject);
         q.setContent(content);
@@ -87,8 +87,8 @@ public class Question1Service {
         this.question1Repository.delete(question1);
     }
 
-    public void vote(Question1 question1, SiteUser siteUser) {
-        question1.getVoter().add(siteUser);
+    public void vote(Question1 question1, User user) {
+        question1.getVoter().add(user);
         this.question1Repository.save(question1);
     }
 }

@@ -2,7 +2,7 @@ package com.web.tyboard.answer;
 
 import com.web.tyboard.question.Question3;
 import com.web.tyboard.question.Question3Service;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import com.web.tyboard.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,13 +29,13 @@ public class Answer3Controller {
     public String createAnswer(Model model, @PathVariable("id") Integer id, @RequestParam String content,
                                @Valid Answer3Form answer3Form, BindingResult bindingResult, Principal principal) {
         Question3 question3 = this.question3Service.getQuestion3(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
+        User user = this.userService.getUser(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("question3", question3);
             return "question3_detail";
         }
         Answer3 answer3 = this.answer3Service.create(question3,
-                answer3Form.getContent(), siteUser);
+                answer3Form.getContent(), user);
         return String.format("redirect:/question3/detail/%s#answer3_%s",
                 answer3.getQuestion3().getId(), answer3.getId());
     }
@@ -47,9 +47,8 @@ public class Answer3Controller {
         if (!answer3.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.answer3Service.modify(answer3, answer3Form.getContent());
-        return String.format("redirect:/question3/detail/%s#answer3_%s",
-                answer3.getQuestion3().getId(), answer3.getId());
+        answer3Form.setContent(answer3.getContent());
+        return "answer3_form";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -82,8 +81,8 @@ public class Answer3Controller {
     @GetMapping("/vote/{id}")
     public String answer3Vote(Principal principal, @PathVariable("id") Integer id) {
         Answer3 answer3 = this.answer3Service.getAnswer3(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.answer3Service.vote(answer3, siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.answer3Service.vote(answer3, user);
         return String.format("redirect:/question3/detail/%s#answer3_%s",
                 answer3.getQuestion3().getId(), answer3.getId());
     }

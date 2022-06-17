@@ -1,13 +1,26 @@
 .navbar-nav{
-	margin-left:80%;
+	margin-left:50%;
+}
+
+.cfu{
+	height: 100px;
 }
 .navhome{
-	margin-left:5%;
-	margin-right: 10%;
+	margin-left: 20%;
+	margin-right: 5%;
 }
-.navbrnd{
+.navbrnd1{
 	margin-left:5%;
 }
+
+.navbrnd2{
+	margin-left:5%;
+}
+
+.navbrnd3{
+	margin-left:5%;
+}
+
 
 /* index.html */
 

@@ -1,7 +1,7 @@
 package com.web.tyboard.question;
 
 import com.web.tyboard.answer.Answer1Form;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import com.web.tyboard.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,14 +16,13 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.security.Principal;
 
-@RequestMapping(value = {"/question1", "/"})
 @RequiredArgsConstructor
 @Controller
 public class Question1Controller {
     private final Question1Service question1Service;
     private final UserService userService;
 
-    @RequestMapping("/list")
+    @RequestMapping("/question1/list")
     public String list(Model model, @RequestParam(value="page", defaultValue="0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
         Page<Question1> paging = this.question1Service.getList(page, kw);
@@ -32,7 +31,7 @@ public class Question1Controller {
         return "question1_list";
     }
 
-    @RequestMapping(value = "/detail/{id}")
+    @RequestMapping(value = "/question1/detail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, Answer1Form answer1Form) {
         Question1 question1 = this.question1Service.getQuestion1(id);
         model.addAttribute("question1", question1);
@@ -40,25 +39,25 @@ public class Question1Controller {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/create")
+    @GetMapping("/question1/create")
     public String question1Create(Question1Form question1Form) {
         return "question1_form";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/create")
+    @PostMapping("/question1/create")
     public String question1Create(@Valid Question1Form question1Form,
                                   BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "question1_form";
         }
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.question1Service.create(question1Form.getSubject(), question1Form.getContent(), siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.question1Service.create(question1Form.getSubject(), question1Form.getContent(), user);
         return "redirect:/question1/list";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/modify/{id}")
+    @GetMapping("/question1/modify/{id}")
     public String question1Modify(Question1Form question1Form, @PathVariable("id") Integer id, Principal principal) {
         Question1 question1 = this.question1Service.getQuestion1(id);
         if(!question1.getAuthor().getUsername().equals(principal.getName())) {
@@ -70,7 +69,7 @@ public class Question1Controller {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/modify/{id}")
+    @PostMapping("/question1/modify/{id}")
     public String question1Modify(@Valid Question1Form question1Form, BindingResult bindingResult,
                                  Principal principal, @PathVariable("id") Integer id) {
         if (bindingResult.hasErrors()) {
@@ -85,7 +84,7 @@ public class Question1Controller {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/delete/{id}")
+    @GetMapping("/question1/delete/{id}")
     public String question1Delete(Principal principal, @PathVariable("id") Integer id) {
         Question1 question1 = this.question1Service.getQuestion1(id);
         if (!question1.getAuthor().getUsername().equals(principal.getName())) {
@@ -96,11 +95,11 @@ public class Question1Controller {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/vote/{id}")
+    @GetMapping("/question1/vote/{id}")
     public String question1Vote(Principal principal, @PathVariable("id") Integer id) {
         Question1 question1 = this.question1Service.getQuestion1(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.question1Service.vote(question1, siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.question1Service.vote(question1, user);
         return String.format("redirect:/question1/detail/%s", id);
     }
 }

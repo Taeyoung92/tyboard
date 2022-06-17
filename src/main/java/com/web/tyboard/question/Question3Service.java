@@ -2,7 +2,7 @@ package com.web.tyboard.question;
 
 import com.web.tyboard.DataNotFoundException;
 import com.web.tyboard.answer.Answer3;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,9 +28,9 @@ public class Question3Service {
             @Override
             public Predicate toPredicate(Root<Question3> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query.distinct(true);  // 중복을 제거
-                Join<Question3, SiteUser> u1 = q.join("author", JoinType.LEFT);
+                Join<Question3, User> u1 = q.join("author", JoinType.LEFT);
                 Join<Question3, Answer3> a = q.join("answer3List", JoinType.LEFT);
-                Join<Answer3, SiteUser> u2 = a.join("author", JoinType.LEFT);
+                Join<Answer3, User> u2 = a.join("author", JoinType.LEFT);
                 return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
                         cb.like(q.get("content"), "%" + kw + "%"),      // 내용
                         cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
@@ -61,7 +61,7 @@ public class Question3Service {
         return this.question3Repository.findAll(spec, pageable);
     }
 
-    public void create(String subject, String content, SiteUser user) {
+    public void create(String subject, String content, User user) {
         Question3 q = new Question3();
         q.setSubject(subject);
         q.setContent(content);
@@ -81,8 +81,8 @@ public class Question3Service {
         this.question3Repository.delete(question3);
     }
 
-    public void vote(Question3 question3, SiteUser siteUser) {
-        question3.getVoter().add(siteUser);
+    public void vote(Question3 question3, User user) {
+        question3.getVoter().add(user);
         this.question3Repository.save(question3);
     }
 }

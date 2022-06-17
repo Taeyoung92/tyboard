@@ -1,7 +1,7 @@
 package com.web.tyboard.answer;
 
 import com.web.tyboard.question.Question1;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,10 +36,10 @@ public class Answer1 {
     private Question1 question1;
 
     @ManyToOne
-    private SiteUser author;
+    private User author;
 
     private LocalDateTime modifyDate;
 
     @ManyToMany
-    Set<SiteUser> voter;
+    Set<User> voter;
 }

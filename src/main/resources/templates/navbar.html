@@ -1,10 +1,10 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 <nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <div class="container-fluid">
-        <a class="navbar-brand navhome" href="/">Q&A Comm.</a>
-        <a class="navbar-brand navbrnd" th:href="@{/question1/list}">JAVA Q&A</a>
-        <a class="navbar-brand navbrnd" th:href="@{/question2/list}">SPRING Q&A</a>
-        <a class="navbar-brand navbrnd" th:href="@{/question3/list}">JPA Q&A</a>
+    <div class="container-fluid cfu">
+        <a class="navbar-brand navhome" href="/">백엔드 질답사이트</a>
+        <a class="navbar-brand navbrnd1" th:href="@{/question1/list}">JAVA Q&A</a>
+        <a class="navbar-brand navbrnd2" th:href="@{/question2/list}">SPRING Q&A</a>
+        <a class="navbar-brand navbrnd3" th:href="@{/question3/list}">JPA Q&A</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -13,7 +13,8 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">
+                        <h6><span sec:authentication="Principal.username"></span>님 환영합니다! </h6>로그아웃</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/signup}">회원가입</a>

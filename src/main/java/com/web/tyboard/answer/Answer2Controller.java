@@ -2,7 +2,7 @@ package com.web.tyboard.answer;
 
 import com.web.tyboard.question.Question2;
 import com.web.tyboard.question.Question2Service;
-import com.web.tyboard.user.SiteUser;
+import com.web.tyboard.user.User;
 import com.web.tyboard.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class Answer2Controller {
     public String createAnswer(Model model, @PathVariable("id") Integer id, @RequestParam String content,
                                @Valid Answer2Form answer2Form, BindingResult bindingResult, Principal principal) {
         Question2 question2 = this.question2Service.getQuestion2(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
+        User siteUser = this.userService.getUser(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("question2", question2);
             return "question2_detail";
@@ -47,9 +47,8 @@ public class Answer2Controller {
         if (!answer2.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.answer2Service.modify(answer2, answer2Form.getContent());
-        return String.format("redirect:/question2/detail/%s#answer2_%s",
-                answer2.getQuestion2().getId(), answer2.getId());
+        answer2Form.setContent(answer2.getContent());
+        return "answer2_form";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -82,8 +81,8 @@ public class Answer2Controller {
     @GetMapping("/vote/{id}")
     public String answer2Vote(Principal principal, @PathVariable("id") Integer id) {
         Answer2 answer2 = this.answer2Service.getAnswer2(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.answer2Service.vote(answer2, siteUser);
+        User user = this.userService.getUser(principal.getName());
+        this.answer2Service.vote(answer2, user);
         return String.format("redirect:/question2/detail/%s#answer2_%s",
                 answer2.getQuestion2().getId(), answer2.getId());
     }
